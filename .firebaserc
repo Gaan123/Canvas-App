@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "pencilcanvas-4f629"
+  },
+  "targets": {
+    "pencilcanvas-4f629": {
+      "hosting": {
+        "front": [
+          "pencilcanvas-4f629"
+        ]
+      }
+    }
+  }
+}
