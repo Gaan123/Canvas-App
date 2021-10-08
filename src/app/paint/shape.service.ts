@@ -18,7 +18,7 @@ const DEFAULT_OPACITY = 0.2;
 const FILLED_WITH_COLOUR_OPACITY = 0.4;
 
 export class FabricShapeService {
-  fillShape(object: CustomFabricObject, colour: DrawingColours) {
+  fillShape(object: CustomFabricObject, colour: string) {
     switch (object.type) {
       case FabricObjectType.RECT:
       case FabricObjectType.ELLIPSE:
@@ -35,7 +35,7 @@ export class FabricShapeService {
     }
   }
 
-  private setOpacity(colour: DrawingColours, to: number): string {
+  private setOpacity(colour: string, to: number): string {
     const opacityOfRGBA = new RegExp('(\\d\\.\\d|\\d)\\)');
     return colour.replace(opacityOfRGBA, `${to})`);
   }
@@ -57,7 +57,7 @@ export class FabricShapeService {
   createEllipse(
     canvas: fabric.Canvas,
     thickness: DrawingThickness,
-    colour: DrawingColours,
+    colour: string,
     pointer: Pointer,
   ): CustomFabricEllipse {
     const ellipse = new fabric.Ellipse({
@@ -81,7 +81,7 @@ export class FabricShapeService {
   createRectangle(
     canvas: fabric.Canvas,
     thickness: DrawingThickness,
-    colour: DrawingColours,
+    colour: string,
     pointer: Pointer,
   ): CustomFabricRect {
     const rect = new fabric.Rect({
@@ -103,7 +103,7 @@ export class FabricShapeService {
   createPath(
     canvas: fabric.Canvas,
     selectedThickness: DrawingThickness,
-    selectedColour: DrawingColours,
+    selectedColour: string,
     pointer: Pointer,
   ): CustomFabricPath {
     const path = new fabric.Path(`M ${pointer.x} ${pointer.y}`, {
@@ -121,7 +121,7 @@ export class FabricShapeService {
   createLine(
     canvas: fabric.Canvas,
     selectedThickness: DrawingThickness,
-    selectedColour: DrawingColours,
+    selectedColour: string,
     dashArray: number[],
     pointer: Pointer,
   ): CustomFabricLine {
@@ -141,7 +141,7 @@ export class FabricShapeService {
   createPolygon(
     canvas: fabric.Canvas,
     selectedThickness: DrawingThickness,
-    selectedColour: DrawingColours,
+    selectedColour: string,
     pointer: Pointer,
   ): CustomFabricPolygon {
     const polygon = new fabric.Polygon([pointer], {
@@ -161,7 +161,7 @@ export class FabricShapeService {
     opts: {
       content?: string;
       thickness?: DrawingThickness;
-      colour?: DrawingColours;
+      colour?: string;
       pointer: { x: number; y: number };
       fontSize?: number;
     },

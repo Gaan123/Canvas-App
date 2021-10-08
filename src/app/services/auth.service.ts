@@ -68,20 +68,16 @@ export class AuthService {
   //     })
   // }
 
-  // Reset Forggot password
-  ForgotPassword(passwordResetEmail: string) {
-    return this.afAuth.sendPasswordResetEmail(passwordResetEmail)
-      .then(() => {
-        window.alert('Password reset email sent, check your inbox.');
-      }).catch((error) => {
-        window.alert(error)
-      })
-  }
+
 
   // Returns true when user is looged in and email is verified
-  get isLoggedIn(): boolean {
+  static isLoggedIn(): boolean {
     const user = JSON.parse(<string>localStorage.getItem('user'));
     return (user !== null && user.emailVerified !== false) ? true : false;
+  }
+  getUser() {
+    const user = JSON.parse(<string>localStorage.getItem('user'));
+    return (user !== null && user.emailVerified !== false) ? user : false;
   }
 
   // Sign in with Google
@@ -93,9 +89,9 @@ export class AuthService {
   AuthLogin(provider:any) {
     return this.afAuth.signInWithPopup(provider)
       .then((result) => {
-        // this.ngZone.run(() => {
-        //   this.router.navigate(['dashboard']);
-        // })
+        this.ngZone.run(() => {
+          this.router.navigate(['canvas']);
+        })
         this.SetUserData(result.user).then(r => console.log(r));
       }).catch((error) => {
         window.alert(error)

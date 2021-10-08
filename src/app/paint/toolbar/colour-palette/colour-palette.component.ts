@@ -10,7 +10,7 @@ import {ColorEvent} from "ngx-color";
 })
 export class ColourPaletteComponent {
   public colours = Object.values(DrawingColours);
-  public selectedColour: DrawingColours;
+  public selectedColour: string;
 
   constructor(private fabricService: EventHandlerService) {
     this.selectedColour = fabricService.selectedColour;

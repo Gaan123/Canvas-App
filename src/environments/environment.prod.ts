@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  firebaseConfig : {
+  firebase : {
     apiKey: "AIzaSyDj-1ov1czqjz-_lOTJU9Yc7seXNJyMbZc",
     authDomain: "pencilcanvas-4f629.firebaseapp.com",
     databaseURL: "https://pencilcanvas-4f629-default-rtdb.firebaseio.com",

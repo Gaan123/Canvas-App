@@ -48,13 +48,13 @@ export class EventHandlerService {
   get selectedTool(): DrawingTools {
     return this._selectedTool;
   }
-  _selectedColour: DrawingColours = DrawingColours.BLACK;
-  set selectedColour(c: DrawingColours) {
+  _selectedColour: string = DrawingColours.BLACK;
+  set selectedColour(c: string) {
     this._selectedColour = c;
     this.canvas.discardActiveObject();
     this.canvas.renderAll();
   }
-  get selectedColour(): DrawingColours {
+  get selectedColour(): string {
     return this._selectedColour;
   }
   selectedThickness: DrawingThickness = DrawingThickness.THIN;
@@ -78,8 +78,8 @@ export class EventHandlerService {
       const img = new Image();
       img.onload = async () => {
         const f_img = new fabric.Image(img);
-        this.canvas.setWidth(f_img.width);
-        this.canvas.setHeight(f_img.height);
+        this.canvas.setWidth(800);
+        this.canvas.setHeight(600);
         this.canvas.setBackgroundImage(f_img, resolve);
       };
       img.onerror = () => {

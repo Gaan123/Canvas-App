@@ -2,6 +2,9 @@ import { AfterContentInit, AfterViewInit, Component, Input, NgZone } from '@angu
 import { fabric } from 'fabric';
 import { EventHandlerService } from '../event-handler.service';
 import { CustomFabricObject } from '../models';
+import {AngularFirestore} from "@angular/fire/compat/firestore";
+import {AuthService} from "../../services/auth.service";
+import {AngularFireDatabase} from "@angular/fire/compat/database";
 
 @Component({
   selector: 'app-fabric-canvas',
@@ -17,7 +20,7 @@ export class FabricCanvasComponent implements AfterContentInit, AfterViewInit {
     }
   }
 
-  constructor(private eventHandler: EventHandlerService, private ngZone: NgZone) {}
+  constructor(private eventHandler: EventHandlerService, private ngZone: NgZone,private firestore: AngularFirestore,private db: AngularFireDatabase,private authService: AuthService) {}
 
   ngAfterContentInit() {
     this.ngZone.runOutsideAngular(() => {
@@ -57,7 +60,32 @@ export class FabricCanvasComponent implements AfterContentInit, AfterViewInit {
     this.eventHandler.mouseMove(event.e);
   }
   private onCanvasMouseUp() {
+    const data={
+      data:JSON.stringify(this.canvas.toJSON()),
+      userId:this.authService.getUser().uid
+    }
+    console.log(this.getDrawings())
+    const d=this.firestore
+      .collection('drawings',ref => {
+        return ref.where('userId','==',data.userId);
+      }).valueChanges().subscribe(val=>console.log(val));
+      // .doc('kHNTDrFX3riWi4WTc7jy')
+      // .valueChanges()
+    console.log(this.db)
     this.eventHandler.mouseUp();
+    // return new Promise<any>((resolve, reject) =>{
+    //   this.firestore
+    //     .collection("drawings")
+    //     .add(data)
+    //     .then(res => {}, err => reject(err));
+    // });
+
+
+
+  }
+  private getDrawings(){
+   return  this.firestore
+      .collection('drawings').valueChanges();
   }
   private onSelectionCreated(e: { target: CustomFabricObject }) {
     this.eventHandler.objectSelected(e.target);

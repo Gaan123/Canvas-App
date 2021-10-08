@@ -11,7 +11,6 @@ import {AngularFirestoreModule} from '@angular/fire/compat/firestore';
 import {environment} from '../environments/environment';
 import {DashboardComponent} from './components/dashboard/dashboard.component';
 import {SignInComponent} from './components/sign-in/sign-in.component';
-import {SignUpComponent} from './components/sign-up/sign-up.component';
 import {ForgotPasswordComponent} from './components/forgot-password/forgot-password.component';
 import {VerifyEmailComponent} from './components/verify-email/verify-email.component';
 import {AuthService} from "./services/auth.service";
@@ -27,12 +26,12 @@ import { CanvasComponent } from './canvas/canvas.component';
 import {EventHandlerService} from "./paint/event-handler.service";
 import {FabricShapeService} from "./paint/shape.service";
 import {ColorSketchModule} from "ngx-color/sketch";
+import {getFirestore, provideFirestore} from "@angular/fire/firestore";
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,
     SignInComponent,
-    SignUpComponent,
     ForgotPasswordComponent,
     VerifyEmailComponent,
     PaintComponent,
@@ -47,6 +46,7 @@ import {ColorSketchModule} from "ngx-color/sketch";
     BrowserModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase),
+    provideFirestore(() => getFirestore()),
     AngularFireAnalyticsModule,
     AngularFirestoreModule,
     BrowserAnimationsModule,
