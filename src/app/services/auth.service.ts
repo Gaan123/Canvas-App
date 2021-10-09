@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 import { User } from "./user";
-import { Router } from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {AngularFirestore, AngularFirestoreDocument} from "@angular/fire/compat/firestore";
 import {AngularFireAuth} from "@angular/fire/compat/auth";
 import firebase from "firebase/compat/app";
@@ -17,6 +17,7 @@ export class AuthService {
     public afs: AngularFirestore,   // Inject Firestore service
     public afAuth: AngularFireAuth, // Inject Firebase auth service
     public router: Router,
+    private route: ActivatedRoute,
     public ngZone: NgZone// Inject Firebase auth service
   ) {
     /* Saving user data in localstorage when
@@ -34,39 +35,8 @@ export class AuthService {
     })
   }
 
-  // Sign in with email/password
-  SignIn(email: string, password: string) {
-    return this.afAuth.signInWithEmailAndPassword(email, password)
-      .then((result) => {
-        this.ngZone.run(() => {
-          this.router.navigate(['dashboard']);
-        });
-        // this.SetUserData(result.user);
-      }).catch((error) => {
-        window.alert(error.message)
-      })
-  }
 
-  // Sign up with email/password
-  SignUp(email: string, password: string) {
-    return this.afAuth.createUserWithEmailAndPassword(email, password)
-      .then((result) => {
-        /* Call the SendVerificaitonMail() function when new user sign
-        up and returns promise */
-        // this.SendVerificationMail();
-        // this.SetUserData(result.user);
-      }).catch((error) => {
-        window.alert(error.message)
-      })
-  }
 
-  // Send email verfificaiton when new user sign up
-  // SendVerificationMail() {
-  //   return this.afAuth.currentUser.sendEmailVerification()
-  //     .then(() => {
-  //       this.router.navigate(['verify-email-address']);
-  //     })
-  // }
 
 
 
@@ -90,7 +60,8 @@ export class AuthService {
     return this.afAuth.signInWithPopup(provider)
       .then((result) => {
         this.ngZone.run(() => {
-          this.router.navigate(['canvas']);
+          this.router.navigate(['canvas'],{relativeTo:this.route});
+          window.location.reload();
         })
         this.SetUserData(result.user).then(r => console.log(r));
       }).catch((error) => {
@@ -125,11 +96,11 @@ export class AuthService {
   }
 
   // Sign out
-  // SignOut() {
-  //   return this.afAuth.signOut().then(() => {
-  //     localStorage.removeItem('user');
-  //     this.router.navigate(['sign-in']);
-  //   })
-  // }
+  SignOut() {
+    return this.afAuth.signOut().then(() => {
+      localStorage.removeItem('user');
+      this.router.navigate(['sign-in']);
+    })
+  }
 
 }

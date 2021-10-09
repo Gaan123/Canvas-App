@@ -20,6 +20,7 @@ const RANGE_AROUND_CENTER = 20;
 @Injectable()
 export class EventHandlerService {
   public imageDataUrl: string;
+  public canvasName: string;
   public canvas: fabric.Canvas;
   private _selectedTool: DrawingTools = DrawingTools.SELECT;
   private previousTop: number;

@@ -1,10 +1,12 @@
-import { AfterContentInit, AfterViewInit, Component, Input, NgZone } from '@angular/core';
+import {AfterContentInit, AfterViewInit, Component, EventEmitter, Input, NgZone, Output} from '@angular/core';
 import { fabric } from 'fabric';
 import { EventHandlerService } from '../event-handler.service';
 import { CustomFabricObject } from '../models';
 import {AngularFirestore} from "@angular/fire/compat/firestore";
 import {AuthService} from "../../services/auth.service";
 import {AngularFireDatabase} from "@angular/fire/compat/database";
+import {CanvasCrudService} from "../../services/canvas-crud.service";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-fabric-canvas',
@@ -13,14 +15,27 @@ import {AngularFireDatabase} from "@angular/fire/compat/database";
 })
 export class FabricCanvasComponent implements AfterContentInit, AfterViewInit {
   canvas: fabric.Canvas;
-
+  private id:string=null;
   @Input() set imageDataURL(v: string) {
     if (v) {
       this.eventHandler.imageDataUrl = v;
     }
   }
+  @Input() set drawingName(v: string) {
+    if (v) {
+      this.eventHandler.canvasName = v;
+    }
+  }
 
-  constructor(private eventHandler: EventHandlerService, private ngZone: NgZone,private firestore: AngularFirestore,private db: AngularFireDatabase,private authService: AuthService) {}
+
+  constructor(private eventHandler: EventHandlerService,
+              private ngZone: NgZone,
+              private firestore: AngularFirestore,
+              private db: AngularFireDatabase,
+              private cs: CanvasCrudService,
+              private _route: ActivatedRoute,
+              private router: Router,
+              private authService: AuthService) {}
 
   ngAfterContentInit() {
     this.ngZone.runOutsideAngular(() => {
@@ -32,12 +47,30 @@ export class FabricCanvasComponent implements AfterContentInit, AfterViewInit {
         preserveObjectStacking: true,
       });
       this.eventHandler.canvas = this.canvas;
+      // var json = canvas.toJSON();
+      // alert(JSON.stringify(json));
+      // canvas.loadFromJSON(json, function() {
+      //   canvas.renderAll();
+      // });
+
+      if (this._route.snapshot.paramMap.get('id')){
+        this.cs.getDrawing(this._route.snapshot.paramMap.get('id')).then(res=>{
+          this.setCanvasName(res.name)
+          this.canvas.loadFromJSON(res.data, ()=> {
+            this.canvas.renderAll();
+          });
+
+        });
+      }
       this.eventHandler.extendToObjectWithId();
       fabric.Object.prototype.objectCaching = false;
       this.addEventListeners();
     });
   }
-
+  @Output() nameEvent=new EventEmitter<string>();
+  setCanvasName(value){
+    this.nameEvent.emit(value)
+  }
   ngAfterViewInit() {
     this.eventHandler.addBGImageSrcToCanvas();
   }
@@ -62,31 +95,26 @@ export class FabricCanvasComponent implements AfterContentInit, AfterViewInit {
   private onCanvasMouseUp() {
     const data={
       data:JSON.stringify(this.canvas.toJSON()),
-      userId:this.authService.getUser().uid
+      userId:this.authService.getUser().uid,
+      name:this.eventHandler.canvasName==undefined?"No Title":this.eventHandler.canvasName
     }
-    console.log(this.getDrawings())
-    const d=this.firestore
-      .collection('drawings',ref => {
-        return ref.where('userId','==',data.userId);
-      }).valueChanges().subscribe(val=>console.log(val));
-      // .doc('kHNTDrFX3riWi4WTc7jy')
-      // .valueChanges()
-    console.log(this.db)
+    // ;
+    const id=this._route.snapshot.paramMap.get('id');
+    // console.log(this.cs.getCanvasDrawings())
+
     this.eventHandler.mouseUp();
-    // return new Promise<any>((resolve, reject) =>{
-    //   this.firestore
-    //     .collection("drawings")
-    //     .add(data)
-    //     .then(res => {}, err => reject(err));
-    // });
+    if (id){
+      this.cs.updateDrawing(data,id)
+    }else if (this.id){
+      this.cs.updateDrawing(data,this.id)
+    }else{
+      this.cs.storeDrawing(data).then(id=>this.id=id);
+    }
 
 
 
   }
-  private getDrawings(){
-   return  this.firestore
-      .collection('drawings').valueChanges();
-  }
+
   private onSelectionCreated(e: { target: CustomFabricObject }) {
     this.eventHandler.objectSelected(e.target);
   }

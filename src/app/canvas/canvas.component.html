@@ -1,18 +1,12 @@
+<div>
 
-<div >
+  <mat-form-field appearance="fill" style="display:block">
+    <mat-label>Drawing Name</mat-label>
 
-<!--  <mat-toolbar style="background-color: #c2c3c4">
-    &lt;!&ndash;    <mat-toolbar-row>
-          <span>Interactive Convex Hull</span>
-
-          <span class="toolbar-spacer"></span>
-          <mat-icon class="mr24" matTooltip="Clear All Drawings">clear_all</mat-icon>
-          <mat-icon class="mr24" matTooltip="Graham Scan">border_outer</mat-icon>
-          <mat-icon  class="mr24" matTooltip="Melkman's Algorithm">border_all</mat-icon>
-
-        </mat-toolbar-row>&ndash;&gt;
-    <app-graphical-toolbar></app-graphical-toolbar>
-  </mat-toolbar>-->
+    <div [formGroup]="myForm">
+      <input matInput formControlName="drawingName" >
+    </div>
+  </mat-form-field>
   <app-graphical-toolbar></app-graphical-toolbar>
-  <app-fabric-canvas [imageDataURL]="imageDataURL"></app-fabric-canvas>
+  <app-fabric-canvas [imageDataURL]="imageDataURL" [drawingName]="drawingName" (nameEvent)="receiveCanvasName($event)"></app-fabric-canvas>
 </div>

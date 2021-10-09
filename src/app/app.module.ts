@@ -27,6 +27,13 @@ import {EventHandlerService} from "./paint/event-handler.service";
 import {FabricShapeService} from "./paint/shape.service";
 import {ColorSketchModule} from "ngx-color/sketch";
 import {getFirestore, provideFirestore} from "@angular/fire/firestore";
+import {MatMenuModule} from "@angular/material/menu";
+import {MatButtonModule} from "@angular/material/button";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatInputModule} from "@angular/material/input";
+import {ReactiveFormsModule} from "@angular/forms";
+import { CanvasListComponent } from './canvas-list/canvas-list.component';
+import {MatTableModule} from "@angular/material/table";
 @NgModule({
   declarations: [
     AppComponent,
@@ -40,6 +47,7 @@ import {getFirestore, provideFirestore} from "@angular/fire/firestore";
     ColourPaletteComponent,
     ThicknessSliderComponent,
     CanvasComponent,
+    CanvasListComponent,
 
   ],
   imports: [
@@ -53,6 +61,12 @@ import {getFirestore, provideFirestore} from "@angular/fire/firestore";
     MatToolbarModule,
     MatIconModule,
     ColorSketchModule,
+    MatMenuModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    MatTableModule,
   ],
   providers: [AuthService,EventHandlerService, FabricShapeService],
   bootstrap: [AppComponent]
