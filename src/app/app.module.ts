@@ -34,7 +34,7 @@ import {MatInputModule} from "@angular/material/input";
 import {ReactiveFormsModule} from "@angular/forms";
 import { CanvasListComponent } from './canvas-list/canvas-list.component';
 import {MatTableModule} from "@angular/material/table";
-@NgModule({
+@ NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,
@@ -48,6 +48,7 @@ import {MatTableModule} from "@angular/material/table";
     ThicknessSliderComponent,
     CanvasComponent,
     CanvasListComponent,
+    // FileUploadModule
 
   ],
   imports: [

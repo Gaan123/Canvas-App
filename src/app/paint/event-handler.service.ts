@@ -89,7 +89,14 @@ export class EventHandlerService {
       img.src = this.imageDataUrl;
     });
   }
-
+  imageLoaded(image){
+    fabric.Image.fromURL(image,  (img)=> {
+      var oImg = img.set({left: 0, top: 0, angle: 0,width:100, height:100}).scale(0.9);
+      this.canvas.add(oImg).renderAll();
+      var a = this.canvas.setActiveObject(oImg);
+      var dataURL = this.canvas.toDataURL({format: 'png', quality: 0.8});
+    });
+  }
   mouseDown(e: Event) {
     this._isMouseDown = true;
     const pointer = this.canvas.getPointer(e);

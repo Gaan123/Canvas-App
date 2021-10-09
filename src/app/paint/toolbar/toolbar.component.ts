@@ -21,4 +21,16 @@ export class GraphicalToolbarComponent {
   toggleColorPicker(display){
     this.pickerDisplay=!this.pickerDisplay;
   }
+
+  imageUpload(event:FileList  ) {
+    // console.log(event[0])
+    var reader = new FileReader();
+    reader.onload =  (f) =>{
+      var data = f.target.result;
+      console.log(data)
+      this.fabricService.imageLoaded(data)
+
+    };
+    reader.readAsDataURL(event[0]);
+  }
 }

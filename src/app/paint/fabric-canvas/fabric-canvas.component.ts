@@ -71,6 +71,7 @@ export class FabricCanvasComponent implements AfterContentInit, AfterViewInit {
   setCanvasName(value){
     this.nameEvent.emit(value)
   }
+
   ngAfterViewInit() {
     this.eventHandler.addBGImageSrcToCanvas();
   }

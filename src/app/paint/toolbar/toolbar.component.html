@@ -102,6 +102,7 @@
           >
             <img src="assets/toolbar-images/garbage.png" />
           </div>
+          <input type="file" (change)="imageUpload($event.target.files)" />
           <app-colour-palette *ngIf="pickerDisplay"></app-colour-palette>
         </mat-toolbar-row>
   </mat-toolbar>
