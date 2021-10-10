@@ -7,6 +7,8 @@ import {AuthService} from "../../services/auth.service";
 import {AngularFireDatabase} from "@angular/fire/compat/database";
 import {CanvasCrudService} from "../../services/canvas-crud.service";
 import {ActivatedRoute, Router} from "@angular/router";
+import {ShareComponent} from "../../share/share.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-fabric-canvas',
@@ -16,6 +18,8 @@ import {ActivatedRoute, Router} from "@angular/router";
 export class FabricCanvasComponent implements AfterContentInit, AfterViewInit {
   canvas: fabric.Canvas;
   private id:string=null;
+  canvasId:string=null;
+  private canvasName;
   @Input() set imageDataURL(v: string) {
     if (v) {
       this.eventHandler.imageDataUrl = v;
@@ -28,14 +32,16 @@ export class FabricCanvasComponent implements AfterContentInit, AfterViewInit {
   }
 
 
-  constructor(private eventHandler: EventHandlerService,
+  constructor(
+            private eventHandler: EventHandlerService,
               private ngZone: NgZone,
               private firestore: AngularFirestore,
               private db: AngularFireDatabase,
               private cs: CanvasCrudService,
               private _route: ActivatedRoute,
               private router: Router,
-              private authService: AuthService) {}
+              private authService: AuthService,
+              public dialog: MatDialog) {}
 
   ngAfterContentInit() {
     this.ngZone.runOutsideAngular(() => {
@@ -47,14 +53,15 @@ export class FabricCanvasComponent implements AfterContentInit, AfterViewInit {
         preserveObjectStacking: true,
       });
       this.eventHandler.canvas = this.canvas;
-      // var json = canvas.toJSON();
-      // alert(JSON.stringify(json));
-      // canvas.loadFromJSON(json, function() {
-      //   canvas.renderAll();
-      // });
 
-      if (this._route.snapshot.paramMap.get('id')){
-        this.cs.getDrawing(this._route.snapshot.paramMap.get('id')).then(res=>{
+      const id= this._route.snapshot.paramMap.get('id')
+      if (id){
+        this.canvasId=id;
+        // console.log(this.canvasId)
+        this.cs.getDrawing(id).then(res=>{
+          console.log(res.userId,this.authService.getUser().uid)
+          this.eventHandler.belongsTo = res.userId === this.authService.getUser().uid;
+          this.canvasName=res.name;
           this.setCanvasName(res.name)
           this.canvas.loadFromJSON(res.data, ()=> {
             this.canvas.renderAll();
@@ -94,26 +101,28 @@ export class FabricCanvasComponent implements AfterContentInit, AfterViewInit {
     this.eventHandler.mouseMove(event.e);
   }
   private onCanvasMouseUp() {
-    const data={
-      data:JSON.stringify(this.canvas.toJSON()),
-      userId:this.authService.getUser().uid,
-      name:this.eventHandler.canvasName==undefined?"No Title":this.eventHandler.canvasName
+    console.log(this.eventHandler.belongsTo)
+    if (this.eventHandler.belongsTo){
+      const data={
+        data:JSON.stringify(this.canvas.toJSON()),
+        userId:this.authService.getUser().uid,
+        name:this.eventHandler.canvasName==undefined?"No Title":this.eventHandler.canvasName
+      }
+      this.canvasName = data.name
+
+      // ;
+      const id=this._route.snapshot.paramMap.get('id');
+      // console.log(this.cs.getCanvasDrawings())
+      this.canvasId = id
+      this.eventHandler.mouseUp();
+      if (id){
+        this.cs.updateDrawing(data,id)
+      }else if (this.id){
+        this.cs.updateDrawing(data,this.id)
+      }else{
+        this.cs.storeDrawing(data).then(id=>this.id=id);
+      }
     }
-    // ;
-    const id=this._route.snapshot.paramMap.get('id');
-    // console.log(this.cs.getCanvasDrawings())
-
-    this.eventHandler.mouseUp();
-    if (id){
-      this.cs.updateDrawing(data,id)
-    }else if (this.id){
-      this.cs.updateDrawing(data,this.id)
-    }else{
-      this.cs.storeDrawing(data).then(id=>this.id=id);
-    }
-
-
-
   }
 
   private onSelectionCreated(e: { target: CustomFabricObject }) {
@@ -136,5 +145,16 @@ export class FabricCanvasComponent implements AfterContentInit, AfterViewInit {
 
   private avoidDragAndClickEventsOfOtherUILibs(e: Event) {
     e.stopPropagation();
+  }
+  openDialog(): void {
+    const dialogRef = this.dialog.open(ShareComponent, {
+      width: '250px',
+      data: {canvasName:this.canvasName,canvasId:this.canvasId,}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      // this.animal = result;
+    });
   }
 }

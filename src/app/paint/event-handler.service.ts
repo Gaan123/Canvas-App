@@ -27,6 +27,7 @@ export class EventHandlerService {
   private previousLeft: number;
   private previousScaleX: number;
   private previousScaleY: number;
+  belongsTo:boolean;
   set selectedTool(t: DrawingTools) {
     this.canvas.discardActiveObject();
     this.canvas.renderAll();

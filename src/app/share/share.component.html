@@ -1,0 +1,34 @@
+<div mat-dialog-content>
+  <mat-form-field appearance="fill">
+    <mat-label>Share with others{{data.canvasName}}</mat-label>
+    <mat-chip-list #chipList aria-label="Fruit selection">
+      <mat-chip
+        *ngFor="let user of users"
+        [selectable]="selectable"
+        [removable]="removable"
+        (removed)="remove(user)">
+        {{user}}
+        <button matChipRemove *ngIf="removable">
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </mat-chip>
+      <input
+        placeholder="New user..."
+        #userInput
+        [formControl]="userCtrl"
+        [matAutocomplete]="auto"
+        [matChipInputFor]="chipList"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+        (matChipInputTokenEnd)="add($event)">
+    </mat-chip-list>
+    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+      <mat-option *ngFor="let user of filteredUser | async" [value]="user">
+        {{user}}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+  <button mat-button  (click)="share()">Ok</button>
+</div>

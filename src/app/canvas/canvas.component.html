@@ -3,10 +3,13 @@
   <mat-form-field appearance="fill" style="display:block">
     <mat-label>Drawing Name</mat-label>
 
+
     <div [formGroup]="myForm">
-      <input matInput formControlName="drawingName" >
+      <input matInput formControlName="drawingName"  [readonly]="!canvasBelongsTo" >
     </div>
+<!--{{canvasBelongsTo}}-->
   </mat-form-field>
+
   <app-graphical-toolbar></app-graphical-toolbar>
   <app-fabric-canvas [imageDataURL]="imageDataURL" [drawingName]="drawingName" (nameEvent)="receiveCanvasName($event)"></app-fabric-canvas>
 </div>

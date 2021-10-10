@@ -31,9 +31,14 @@ import {MatMenuModule} from "@angular/material/menu";
 import {MatButtonModule} from "@angular/material/button";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { CanvasListComponent } from './canvas-list/canvas-list.component';
 import {MatTableModule} from "@angular/material/table";
+import { ShareComponent } from './share/share.component';
+import {MatDialogModule} from "@angular/material/dialog";
+import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import {MatChipsModule} from "@angular/material/chips";
+import { SharedComponent } from './shared/shared.component';
 @ NgModule({
   declarations: [
     AppComponent,
@@ -48,6 +53,8 @@ import {MatTableModule} from "@angular/material/table";
     ThicknessSliderComponent,
     CanvasComponent,
     CanvasListComponent,
+    ShareComponent,
+    SharedComponent,
     // FileUploadModule
 
   ],
@@ -68,6 +75,10 @@ import {MatTableModule} from "@angular/material/table";
     MatInputModule,
     ReactiveFormsModule,
     MatTableModule,
+    FormsModule,
+    MatDialogModule,
+    MatAutocompleteModule,
+    MatChipsModule,
   ],
   providers: [AuthService,EventHandlerService, FabricShapeService],
   bootstrap: [AppComponent]

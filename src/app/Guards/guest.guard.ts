@@ -10,7 +10,7 @@ export class GuestGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot):any {
     if (AuthService.isLoggedIn()){
-      this.router.navigateByUrl("/canvas");
+      this.router.navigateByUrl("/drawings");
     }
     return true;
   }

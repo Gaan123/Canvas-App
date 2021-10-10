@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 import {ActivatedRoute} from "@angular/router";
 import {CanvasCrudService} from "../services/canvas-crud.service";
+import { EventHandlerService } from '../paint/event-handler.service';
 
 @Component({
   selector: 'app-canvas',
@@ -12,13 +13,14 @@ import {CanvasCrudService} from "../services/canvas-crud.service";
 export class CanvasComponent implements OnInit {
 
   drawingName='';
+  canvasBelongsTo:boolean;
   canvasData='sd';
   imageDataURL = 'assets/background.jpeg';
   public myForm: FormGroup;
   constructor(
     private fb: FormBuilder,
     private _route: ActivatedRoute,
-    private cs: CanvasCrudService,
+    private eventHandler: EventHandlerService
   ) { }
 
   ngOnInit(): void {
@@ -29,13 +31,14 @@ export class CanvasComponent implements OnInit {
       debounceTime(400),
       distinctUntilChanged()
     ).subscribe(e=>{
-      console.log(e.drawingName)
       this.drawingName=e.drawingName
     })
 
 
   }
+
   receiveCanvasName(name){
+    this.canvasBelongsTo=this.eventHandler.belongsTo;
     this.myForm.patchValue({
       drawingName:name
     })
